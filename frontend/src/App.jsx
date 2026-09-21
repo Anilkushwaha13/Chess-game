@@ -137,7 +137,7 @@ function App() {
   if (view === 'menu') {
     return (
       <div className="menu-container">
-        <div style={{position: 'absolute', top: '20px', right: '20px', backgroundColor: '#333', padding: '10px 15px', borderRadius: '20px', border: '1px solid #444', color: '#00ffcc', fontWeight: 'bold'}}>
+        <div className="player-count-badge">
           🟢 {serverStats.players_online} Players Online
         </div>
         <h1>⚡ Power Chess ⚡</h1>

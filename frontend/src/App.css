@@ -5,7 +5,8 @@ body {
   display: flex;
   justify-content: center;
   margin: 0;
-  padding: 20px;
+  padding: 10px;
+  min-height: 100vh;
 }
 
 .menu-container { 
@@ -14,21 +15,38 @@ body {
   align-items: center; 
   margin-top: 5vh; 
   text-align: center; 
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+}
+
+.player-count-badge {
+  position: absolute; 
+  top: -40px; 
+  right: 0px; 
+  background-color: #333; 
+  padding: 8px 12px; 
+  border-radius: 20px; 
+  border: 1px solid #444; 
+  color: #00ffcc; 
+  font-weight: bold;
+  font-size: 0.85rem;
 }
 
 .menu-container h1 {
-  font-size: 3.5rem;
+  font-size: clamp(2.5rem, 8vw, 3.5rem);
   color: #00ffcc;
   text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .menu-section { 
   background: #2a2a2a; 
-  padding: 30px; 
+  padding: 25px; 
   border-radius: 12px; 
   margin-bottom: 20px; 
-  width: 400px; 
+  width: 100%; 
+  box-sizing: border-box;
   box-shadow: 0 5px 25px rgba(0,0,0,0.5); 
 }
 
@@ -46,8 +64,8 @@ body {
 
 .mode-btn { 
   flex: 1; 
-  padding: 15px; 
-  font-size: 1.1rem; 
+  padding: 12px; 
+  font-size: clamp(0.9rem, 3vw, 1.1rem); 
   background: #444; 
   border: none; 
   color: white; 
@@ -67,7 +85,7 @@ body {
   width: 100%; 
   padding: 15px; 
   margin-top: 15px; 
-  font-size: 1.2rem; 
+  font-size: 1.1rem; 
   font-weight: bold; 
   border-radius: 6px; 
   border: none; 
@@ -75,6 +93,7 @@ body {
   color: white; 
   background: #666; 
   transition: transform 0.1s, filter 0.2s; 
+  box-sizing: border-box;
 }
 
 .big-btn:hover { 
@@ -89,21 +108,25 @@ body {
   margin-top: 25px; 
   border-top: 1px solid #444; 
   padding-top: 25px; 
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.online-box input { 
-  width: calc(100% - 30px); 
-  padding: 15px; 
+.online-box input, .online-box select { 
+  width: 100%;
+  box-sizing: border-box; 
+  padding: 12px; 
   border-radius: 6px; 
   border: none; 
-  font-size: 1.1rem; 
+  font-size: 1rem; 
   text-align: center; 
   background: #111;
   color: white;
   outline: none;
 }
 
-.online-box input:focus {
+.online-box input:focus, .online-box select:focus {
   border: 1px solid #7b61ff;
 }
 
@@ -111,26 +134,30 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 600px;
 }
 
 .header-info { 
   display: flex; 
-  gap: 15px; 
+  gap: 10px; 
   margin-bottom: 10px; 
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .badge { 
   background: #333; 
-  padding: 8px 15px; 
+  padding: 6px 12px; 
   border-radius: 20px; 
-  font-size: 0.9rem; 
+  font-size: 0.85rem; 
   border: 1px solid #555; 
   font-weight: bold;
 }
 
 .highlight { color: #00ffcc; }
-.white-turn { color: #f0d9b5; font-size: 1.5em; text-shadow: 0 0 10px rgba(240, 217, 181, 0.5); }
-.black-turn { color: #b58863; font-size: 1.5em; text-shadow: 0 0 10px rgba(181, 136, 99, 0.5); }
+.white-turn { color: #f0d9b5; font-size: 1.2em; text-shadow: 0 0 10px rgba(240, 217, 181, 0.5); }
+.black-turn { color: #b58863; font-size: 1.2em; text-shadow: 0 0 10px rgba(181, 136, 99, 0.5); }
 
 .board {
   display: flex;
@@ -140,19 +167,21 @@ body {
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   margin-top: 10px;
+  width: min(600px, 95vw);
+  height: min(600px, 95vw);
 }
 
 .board-row {
   display: flex;
+  flex: 1;
 }
 
 .square {
-  width: 75px;
-  height: 75px;
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 55px;
+  font-size: clamp(25px, 7.5vw, 55px);
   cursor: pointer;
   user-select: none;
   position: relative;
@@ -163,23 +192,23 @@ body {
 .black-sq { background-color: #b58863; }
 
 .square.selected { 
-  box-shadow: inset 0 0 0 4px #00ffcc;
+  box-shadow: inset 0 0 0 clamp(2px, 1vw, 4px) #00ffcc;
 }
 
 .square.last-move {
-  box-shadow: inset 0 0 0 4px rgba(255, 255, 0, 0.9);
+  box-shadow: inset 0 0 0 clamp(2px, 1vw, 4px) rgba(255, 255, 0, 0.9);
 }
 
 .square.in-check {
-  box-shadow: inset 0 0 25px rgba(255, 0, 0, 0.8) !important;
+  box-shadow: inset 0 0 clamp(10px, 3vw, 25px) rgba(255, 0, 0, 0.8) !important;
   background-color: rgba(255, 0, 0, 0.3) !important;
 }
 
 /* NORMAL CHESS MOVE INDICATORS */
 .valid-move-dot {
   position: absolute;
-  width: 25px;
-  height: 25px;
+  width: clamp(10px, 3vw, 25px);
+  height: clamp(10px, 3vw, 25px);
   background-color: rgba(0, 0, 0, 0.25);
   border-radius: 50%;
   pointer-events: none; /* Let clicks pass through to the square */
@@ -197,14 +226,13 @@ body {
 }
 
 .leave-btn { 
-  margin-top: 30px; 
-  padding: 12px 24px; 
+  padding: 10px 20px; 
   background: #ff4757; 
   color: white; 
   border: none; 
   border-radius: 6px; 
   cursor: pointer; 
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 .leave-btn:hover { background: #ff2a3f; }
@@ -218,15 +246,18 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 15px;
 }
 
 .modal-content {
   background: #2a2a2a;
-  padding: 40px;
+  padding: 30px;
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
-  min-width: 300px;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
 }
 
 .modal-content h3, .modal-content h2 {
@@ -245,8 +276,8 @@ body {
   background: #444;
   color: white;
   border: none;
-  padding: 15px;
-  font-size: 1.2rem;
+  padding: 12px;
+  font-size: 1.1rem;
   border-radius: 6px;
   cursor: pointer;
   transition: 0.2s;
@@ -256,4 +287,13 @@ body {
   background: #00ffcc;
   color: black;
   font-weight: bold;
+}
+
+@media (max-width: 480px) {
+  .review-controls {
+    flex-wrap: wrap;
+  }
+  .review-controls button {
+    flex: 1;
+  }
 }
