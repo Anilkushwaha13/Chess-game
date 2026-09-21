@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: power-chess-backend
+    env: docker
+    region: ohio
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    envVars:
+      - key: STOCKFISH_PATH
+        value: /usr/games/stockfish
+      - key: ENABLE_AI_LIMIT
+        value: "true"
+      - key: MAX_AI_CONCURRENCY
+        value: "4"
+
+  - type: web
+    name: power-chess-frontend
+    env: static
+    region: ohio
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_BACKEND_URL
+        value: https://power-chess-backend.onrender.com
