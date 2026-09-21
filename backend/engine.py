@@ -413,16 +413,40 @@ class GameEngine:
     def get_ai_move(self):
         import math, random, os
         
+        # Build history of piece placements to prevent loops
+        past_layouts = [h['fen'].split()[0] for h in self.history]
+        
         # 1. Stockfish Engine for Classic Mode
         if self.game_mode == "classic":
             try:
                 from stockfish import Stockfish
+                import chess
                 sf_path = os.environ.get("STOCKFISH_PATH", os.path.join(os.path.dirname(__file__), "stockfish_bin", "stockfish", "stockfish-windows-x86-64-avx2.exe"))
                 stockfish = Stockfish(path=sf_path, depth=12, parameters={"Skill Level": 20})
                 fen = self.board_to_fen()
                 if stockfish.is_fen_valid(fen):
                     stockfish.set_fen_position(fen)
-                    best_move = stockfish.get_best_move() # e.g. 'e2e4'
+                    top_moves = stockfish.get_top_moves(5)
+                    best_move = None
+                    
+                    for move_info in top_moves:
+                        m_str = move_info["Move"]
+                        # Filter out moves causing a repetition
+                        try:
+                            cb = chess.Board(fen)
+                            cb.push_uci(m_str)
+                            next_layout = cb.fen().split()[0]
+                            if past_layouts.count(next_layout) >= 1:
+                                continue # Skip repetition
+                        except Exception:
+                            pass
+                        
+                        best_move = m_str
+                        break
+                        
+                    if not best_move and top_moves:
+                        best_move = top_moves[0]["Move"] # Fallback
+                        
                     if best_move:
                         sc = ord(best_move[0]) - ord('a')
                         sr = 8 - int(best_move[1])
@@ -450,6 +474,19 @@ class GameEngine:
             
         moves = self.get_all_valid_moves("black")
         if not moves: return None
+        
+        # Filter moves that cause repetition if possible
+        non_repeating_moves = []
+        for start, end in moves:
+            sim = self.clone()
+            sim.execute_move(start[0], start[1], end[0], end[1], "queen")
+            layout = sim.board_to_fen().split()[0]
+            if past_layouts.count(layout) < 1:
+                non_repeating_moves.append((start, end))
+                
+        # If all moves repeat, just allow them
+        if non_repeating_moves:
+            moves = non_repeating_moves
         
         # Move Ordering: Prioritize captures to optimize alpha-beta pruning
         def score_move(move):
